@@ -11,7 +11,6 @@
      state: present
      insecure: true
   - ovirt_network:
-      auth: "{{ ovirt_auth }}"
       data_center: "{{ ovirt_data_center }}"
       name: "network-{{ item }}"
       vlan_tag: "{{ item }}"

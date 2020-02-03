@@ -17,7 +17,6 @@
       cpu_type: Intel SandyBridge IBRS SSBD MDS Family
 
   - ovirt_host:
-      auth: "{{ ovirt_auth }}"
       cluster: Default
       name: "{{ ovirt_host }}"
       address: "{{ ovirt_address }}"
@@ -25,7 +24,6 @@
 
   - ovirt_host_network:
       name: "{{ ovirt_host }}"
-      auth: "{{ ovirt_auth }}"
       interface: "{{ ovirt_interface }}"
       networks:
         - name: "network-{{ item + 0}}"
