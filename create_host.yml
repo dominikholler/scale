@@ -1,0 +1,82 @@
+---
+- hosts: localhost
+  vars:
+    host_tag: ovirt_hosts
+  tasks:
+    - digital_ocean_sshkey_info:
+      register: ssh_keys
+    - digital_ocean_droplet:
+        name: "{{ host_name }}"
+        unique_name: yes
+        tags: [ "{{ host_tag }}" ]
+        region: fra1
+        image: centos-7-x64
+        size: s-1vcpu-2gb
+        ipv6: yes
+        private_networking: yes
+        monitoring: yes
+        ssh_keys: "{{ ssh_keys.data | map(attribute='id') | list }}"
+        wait: yes
+      register: droplet
+    - wait_for:
+        host: "{{ droplet.data.ip_address }}"
+        port: 22
+    - add_host:
+        name: "{{ droplet.data.ip_address }}"
+        groups: [ "{{ host_tag }}" ]
+
+- hosts: ovirt_hosts
+  vars:
+    ovirt_host_pw: "{{ lookup('env','OVIRT_PASSWORD') }}"
+    ansible_user: root
+  tasks:
+  - lineinfile: dest=/etc/ssh/sshd_config
+                regexp='^#?PasswordAuthentication'
+                line='PasswordAuthentication yes'
+  - service: name=sshd state=restarted
+  - user:
+      name: root
+      password: "{{ ovirt_host_pw | password_hash('sha512') }}"
+  - yum:
+      name: https://resources.ovirt.org/pub/yum-repo/ovirt-release43-snapshot.rpm
+
+- hosts: localhost
+  vars:
+    ovirt_cluster: Default
+    ovirt_host_pw: "{{ lookup('env','OVIRT_PASSWORD') }}"
+    ovirt_host: "{{ droplet.data.droplet.name }}"
+    ovirt_address: "{{ droplet.data.ip_address }}"
+    ovirt_interface: eth1
+    offset: 1
+    items: "{{ range(offset, offset+300, 10)|list }}"
+
+  tasks:
+  - ovirt_auth:
+     state: present
+     insecure: true
+
+  - ovirt_cluster:
+      name: "{{ ovirt_cluster }}"
+      cpu_type: Intel SandyBridge IBRS SSBD MDS Family
+
+  - ovirt_host:
+      cluster: Default
+      name: "{{ ovirt_host }}"
+      address: "{{ ovirt_address }}"
+      password: "{{ ovirt_host_pw }}"
+
+  - ovirt_host_network:
+      name: "{{ ovirt_host }}"
+      interface: "{{ ovirt_interface }}"
+      networks:
+        - name: "network-{{ item + 0}}"
+        - name: "network-{{ item + 1 }}"
+        - name: "network-{{ item + 2 }}"
+        - name: "network-{{ item + 3 }}"
+        - name: "network-{{ item + 4 }}"
+        - name: "network-{{ item + 5 }}"
+        - name: "network-{{ item + 6 }}"
+        - name: "network-{{ item + 7 }}"
+        - name: "network-{{ item + 8 }}"
+        - name: "network-{{ item + 9 }}"
+    loop: "{{ items }}"
