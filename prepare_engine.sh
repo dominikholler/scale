@@ -4,7 +4,7 @@ source auth.sh
 
 engine=$1
 SSH="ssh root@$engine -o StrictHostKeyChecking=no"
-$SSH yum install -y https://resources.ovirt.org/pub/yum-repo/ovirt-release43.rpm
+$SSH yum install -y $OVIRT_REPO
 $SSH yum install -y ovirt-engine
 $SSH -T "cat > /root/answerfile.txt" <<EOF
 [environment:default]

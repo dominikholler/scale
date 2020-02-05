@@ -6,6 +6,7 @@ export OVIRT_HOSTNAME=TODO
 export OVIRT_USERNAME=admin@internal
 export OVIRT_PASSWORD=TODO
 export ANSIBLE_HOST_KEY_CHECKING=False
+export OVIRT_REPO=https://resources.ovirt.org/pub/yum-repo/ovirt-release43-snapshot.rpm
 ```
 * create Engine VM manually
 * ensure that $OVIRT_HOSTNAME maps to Engine VM
