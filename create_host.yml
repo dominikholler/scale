@@ -40,6 +40,7 @@
       password: "{{ ovirt_host_pw | password_hash('sha512') }}"
   - yum:
       name: "{{ ovirt_repo }}"
+      lock_timeout: 180
 
 - hosts: localhost
   vars:
@@ -49,7 +50,7 @@
     ovirt_address: "{{ droplet.data.ip_address }}"
     ovirt_interface: eth1
     offset: 1
-    items: "{{ range(offset, offset+300, 10)|list }}"
+    items: "{{ range(offset, offset+300, 15)|list }}"
 
   tasks:
   - ovirt_auth:
@@ -70,14 +71,19 @@
       name: "{{ ovirt_host }}"
       interface: "{{ ovirt_interface }}"
       networks:
-        - name: "network-{{ item + 0}}"
-        - name: "network-{{ item + 1 }}"
-        - name: "network-{{ item + 2 }}"
-        - name: "network-{{ item + 3 }}"
-        - name: "network-{{ item + 4 }}"
-        - name: "network-{{ item + 5 }}"
-        - name: "network-{{ item + 6 }}"
-        - name: "network-{{ item + 7 }}"
-        - name: "network-{{ item + 8 }}"
-        - name: "network-{{ item + 9 }}"
+        - name: "network-{{ item +  0}}"
+        - name: "network-{{ item +  1 }}"
+        - name: "network-{{ item +  2 }}"
+        - name: "network-{{ item +  3 }}"
+        - name: "network-{{ item +  4 }}"
+        - name: "network-{{ item +  5 }}"
+        - name: "network-{{ item +  6 }}"
+        - name: "network-{{ item +  7 }}"
+        - name: "network-{{ item +  8 }}"
+        - name: "network-{{ item +  9 }}"
+        - name: "network-{{ item + 10 }}"
+        - name: "network-{{ item + 11 }}"
+        - name: "network-{{ item + 12 }}"
+        - name: "network-{{ item + 13 }}"
+        - name: "network-{{ item + 14 }}"
     loop: "{{ items }}"
