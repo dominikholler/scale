@@ -14,5 +14,6 @@ OVESETUP_CONFIG/adminPassword=str:$OVIRT_PASSWORD
 EOF
 $SSH engine-setup --accept-defaults --offline --config-append=/root/answerfile.txt
 $SSH engine-config -s HostPackagesUpdateTimeInHours=0
-sleep 10
+$SSH systemctl restart ovirt-engine
+sleep 20
 ansible-playbook add_networks.yml
